@@ -1,20 +1,17 @@
-
 import sys
 from pathlib import Path
 import cv2
 import numpy as np
 
-# نضيف المجلد src للمسار عشان نقدر نستورد الملفات
 sys.path.append('src')
 
 from preprocessing import ImagePreprocessor
-from ela_engine import ELAEngine
+from ELA import ELAEngine
 
 print("🧡 Testing Preprocessing + ELA together\n")
 
-# 1. تجهيز المسارات
-test_image = "test_image/original.jpeg"  # غير المسار لصورة عندك
-temp_dir = Path("temp")
+test_image = "test_image/original.jpeg"
+temp_dir = Path("temp")  
 temp_dir.mkdir(exist_ok=True)
 
 try:
@@ -35,13 +32,11 @@ try:
     ela_result, compressed = ela.calculate_ela(img_processed, return_diff_only=False)
     ela_score = ela.get_ela_score(ela_result)
     
-    # 4. عرض النتائج
     print("\n" + "="*50)
     print("📊 Final Results")
     print("="*50)
     print(f"ELA Score: {ela_score:.2f}%")
     
-    # 5. حفظ كل الصور
     cv2.imwrite("temp/01_original.jpg", 
                 cv2.cvtColor(img_processed, cv2.COLOR_RGB2BGR))
     cv2.imwrite("temp/02_compressed.jpg", 
