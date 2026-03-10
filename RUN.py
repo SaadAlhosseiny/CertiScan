@@ -4,14 +4,22 @@ import subprocess
 import platform
 from ELA import ELAEngine
 from preprocessing import ImagePreprocessor
+from noise import NoiseAnalyzer
+from fft import FFTAnalyzer
 
-def get_verdict(score):
-    if score < 10:
-        return "Safe: Image appears to be authentic."
-    elif score < 25:
-        return "Caution: Moderate variations detected. Possibly due to compression."
+
+def get_verdict(ela_score, noise_score, fft_score):
+    final_score = (0.4 * ela_score) + (0.3 * noise_score) + (0.3 * fft_score)
+    
+    if final_score < 15:
+        return f"✅ Excellent: Image is authentic (Final Score: {final_score:.2f}%)"
+    elif final_score < 30:
+        return f"🟡 Good: Image appears to be authentic (Final Score: {final_score:.2f}%)"
+    elif final_score < 50:
+        return f"⚠️ Suspicious: Possible manipulation detected (Final Score: {final_score:.2f}%)"
     else:
-        return "Warning: High variations! Strong possibility of manipulation."
+        return f"❌ Forged: Clear signs of manipulation (Final Score: {final_score:.2f}%)"
+
 
 def open_image(path):
     try:
@@ -50,18 +58,43 @@ def main():
         ela_display, compressed, diff_raw = ela_engine.calculate_ela(img)
         score = ela_engine.get_ela_score(diff_raw)
 
+
+
+
+        img_processed = preprocessor.preprocess(IMAGE_PATH)
+        img_gray = cv2.cvtColor(img_processed, cv2.COLOR_RGB2GRAY)
+
+        noise_analyzer = NoiseAnalyzer()
+        noise_map, suspicious_map = noise_analyzer.analyze_noise(img_gray)
+        noise_score = noise_analyzer.get_noise_score(noise_map)
+
+        fft_analyzer = FFTAnalyzer()
+        fft_map = fft_analyzer.analyze_fft(img_gray)
+        fft_score = fft_analyzer.get_fft_score(fft_map)
+
+
+
+
         base_name = os.path.basename(IMAGE_PATH).split('.')[0]
         output_filename = f"{base_name}_ela_result.jpg"
         output_path = os.path.join(OUTPUT_DIR, output_filename)
 
+
         print("\n" + "="*45)
         print(f"Analyzing: {os.path.basename(IMAGE_PATH)}")
-        print(f"ELA Score: {score:.2f}%")
-        print(f"Verdict: {get_verdict(score)}")
+        print(f"ELA Score:   {score:.2f}%")
+        print(f"Noise Score: {noise_score:.2f}%")
+        print(f"FFT Score:   {fft_score:.2f}%")
+        print(f"Verdict: {get_verdict(score, noise_score, fft_score)}")
         print("="*45)
 
+
         cv2.imwrite(output_path, cv2.cvtColor(ela_display, cv2.COLOR_RGB2BGR))
+        cv2.imwrite("temp/suspicious_map.jpg", suspicious_map)
+        cv2.imwrite("temp/noise_map.jpg", noise_map)      # ← ضيف
+        cv2.imwrite("temp/fft_map.jpg", fft_map)    
         print(f"✅ Result saved as: {output_path}")
+
 
         open_image(output_path)
         
