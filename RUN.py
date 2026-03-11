@@ -1,105 +1,92 @@
 import cv2
-import os
 import subprocess
 import platform
+from pathlib import Path
 from ELA import ELAEngine
 from preprocessing import ImagePreprocessor
 from noise import NoiseAnalyzer
 from fft import FFTAnalyzer
 
-
 def get_verdict(ela_score, noise_score, fft_score):
-    final_score = (0.4 * ela_score) + (0.3 * noise_score) + (0.3 * fft_score)
+    # الـ FFT واخد 50% من الوزن لأنه الأدق في كشف الفوتوشوب
+    final_score = (0.3 * ela_score) + (0.2 * noise_score) + (0.5 * fft_score)
     
-    if final_score < 15:
-        return f"✅ Excellent: Image is authentic (Final Score: {final_score:.2f}%)"
-    elif final_score < 30:
-        return f"🟡 Good: Image appears to be authentic (Final Score: {final_score:.2f}%)"
-    elif final_score < 50:
-        return f"⚠️ Suspicious: Possible manipulation detected (Final Score: {final_score:.2f}%)"
+    # لو الـ FFT عدي الـ 30 في المعادلة الجديدة، ده تزوير رقمي واضح
+    if fft_score > 30:
+        return f"❌ Forged: Digital Manipulation Detected (FFT High: {fft_score:.2f}%)"
+    elif final_score > 22:
+        return f"⚠️ Suspicious: Potential Alteration (Final: {final_score:.2f}%)"
+    elif final_score < 12:
+        return f"✅ Excellent: Image is authentic"
     else:
-        return f"❌ Forged: Clear signs of manipulation (Final Score: {final_score:.2f}%)"
-
+        return f"🟡 Good: Image appears authentic"
 
 def open_image(path):
     try:
         if platform.system() == "Windows":
+            import os
             os.startfile(path)
         elif platform.system() == "Darwin":
             subprocess.call(["open", path])
-        else:
-            print(f"To view the result, check this path: {path}")
-    except Exception as e:
-        print(f"Could not open image automatically: {e}")
+    except: pass
 
 def main():
-    OUTPUT_DIR = "temp"
-    if not os.path.exists(OUTPUT_DIR):
-        os.makedirs(OUTPUT_DIR)
+    OUTPUT_DIR = Path("temp")
+    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
-    print("\n" + "—"*30)
-    print("🎯 ELA Forensic Scanner")
-    print("—"*30)
+    print("\n" + "="*35)
+    print("🚀 CertiScan Pro - Forensic Suite")
+    print("="*35)
     
-    # هنا البرنامج هيطلب منك اسم الصورة
-    # مثال: test_images/usa-NF-1004-d1.jpg.jpeg
-    IMAGE_PATH = input("Enter the image path: ").strip()
+    IMAGE_PATH_STR = input("Enter image path: ").strip()
+    IMAGE_PATH = Path(IMAGE_PATH_STR)
+
+    if not IMAGE_PATH.exists():
+        print(f"❌ Error: File not found!")
+        return
 
     try:
         preprocessor = ImagePreprocessor()
         ela_engine = ELAEngine(quality=90, scale_factor=15)
-
-        img = cv2.imread(IMAGE_PATH)
-        if img is None:
-            print(f"❌ Error: Could not find image at [{IMAGE_PATH}]")
-            print("Make sure the folder and file name are correct.")
-            return
-
-        ela_display, compressed, diff_raw = ela_engine.calculate_ela(img)
-        score = ela_engine.get_ela_score(diff_raw)
-
-
-
-
-        img_processed = preprocessor.preprocess(IMAGE_PATH)
+        
+        img = cv2.imread(str(IMAGE_PATH))
+        img_processed = preprocessor.preprocess(str(IMAGE_PATH))
         img_gray = cv2.cvtColor(img_processed, cv2.COLOR_RGB2GRAY)
 
+        # 1. تحليل ELA و Noise
+        ela_display, _, diff_raw = ela_engine.calculate_ela(img)
+        ela_score = ela_engine.get_ela_score(diff_raw)
+        
         noise_analyzer = NoiseAnalyzer()
         noise_map, suspicious_map = noise_analyzer.analyze_noise(img_gray)
         noise_score = noise_analyzer.get_noise_score(noise_map)
 
+        # 2. تحليل FFT (المطور)
         fft_analyzer = FFTAnalyzer()
         fft_map = fft_analyzer.analyze_fft(img_gray)
         fft_score = fft_analyzer.get_fft_score(fft_map)
 
-
-
-
-        base_name = os.path.basename(IMAGE_PATH).split('.')[0]
-        output_filename = f"{base_name}_ela_result.jpg"
-        output_path = os.path.join(OUTPUT_DIR, output_filename)
-
-
-        print("\n" + "="*45)
-        print(f"Analyzing: {os.path.basename(IMAGE_PATH)}")
-        print(f"ELA Score:   {score:.2f}%")
-        print(f"Noise Score: {noise_score:.2f}%")
+        # 3. عرض التقرير
+        print("\n" + "📊 ANALYSIS REPORT")
+        print("-" * 25)
+        print(f"File: {IMAGE_PATH.name}")
         print(f"FFT Score:   {fft_score:.2f}%")
-        print(f"Verdict: {get_verdict(score, noise_score, fft_score)}")
-        print("="*45)
+        print(f"ELA Score:   {ela_score:.2f}%")
+        print(f"Noise Score: {noise_score:.2f}%")
+        print("-" * 25)
+        print(f"Verdict: {get_verdict(ela_score, noise_score, fft_score)}")
+        print("-" * 25)
 
-
-        cv2.imwrite(output_path, cv2.cvtColor(ela_display, cv2.COLOR_RGB2BGR))
-        cv2.imwrite("temp/suspicious_map.jpg", suspicious_map)
-        cv2.imwrite("temp/noise_map.jpg", noise_map)      # ← ضيف
-        cv2.imwrite("temp/fft_map.jpg", fft_map)    
-        print(f"✅ Result saved as: {output_path}")
-
-
-        open_image(output_path)
+        # 4. حفظ النتائج
+        output_path = OUTPUT_DIR / f"{IMAGE_PATH.stem}_result.jpg"
+        cv2.imwrite(str(output_path), cv2.cvtColor(ela_display, cv2.COLOR_RGB2BGR))
+        cv2.imwrite(str(OUTPUT_DIR / "fft_map.jpg"), fft_map)
+        
+        print(f"✅ Maps saved in 'temp/'.")
+        open_image(str(output_path))
         
     except Exception as e:
-        print(f"❌ System Error: {e}")
+        print(f"❌ Error: {e}")
 
 if __name__ == "__main__":
     main()
