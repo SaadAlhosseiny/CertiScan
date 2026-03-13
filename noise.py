@@ -40,7 +40,7 @@ class NoiseAnalyzer:
     # ⬜ get_noise_score(noise_map)
 
     def get_noise_score(self, noise_map):
-        score = np.mean(noise_map) / 255 * 100
+        score = min(float(np.percentile(noise_map, 95)) / 255 * 100, 100)
         score = min(score, 100)
         print(f"✅ Noise Score: {score:.2f}%")
         return score
