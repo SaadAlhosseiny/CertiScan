@@ -47,5 +47,5 @@ class ELAEngine:
 
     def get_ela_score(self, diff_raw):
         gray = cv2.cvtColor(diff_raw, cv2.COLOR_RGB2GRAY) if diff_raw.ndim==3 else diff_raw
-        score = np.mean(gray) * 100 / 255
+        score = min(float(np.percentile(gray, 95)) / 255 * 100, 100)
         return min(score, 100)
