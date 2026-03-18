@@ -24,14 +24,15 @@ if "lang"         not in st.session_state: st.session_state.lang         = "ar"
 if "page"         not in st.session_state: st.session_state.page         = "home"
 if "chat_history" not in st.session_state: st.session_state.chat_history = []
 if "groq_history" not in st.session_state: st.session_state.groq_history = []
+if "doc_count"    not in st.session_state: st.session_state.doc_count    = 0
 
 L = {
     "ar": {
         "tagline": "الحقيقة لا تزور",
         "subtitle": "نظام جنائي رقمي متكامل لكشف التزوير في الوثائق والشهادات الرسمية",
-        "nav_home": "الرئيسية", "nav_analyze": "التحليل", "nav_about": "عن النظام", "nav_chat": "المساعد",
+        "nav_home": "لوحة التحكم", "nav_analyze": "رفع الملف", "nav_about": "منهجية التحليل", "nav_chat": "المساعد",
         "start_btn": "ابدا التحليل الان",
-        "upload_title": "ارفع وثيقتك هنا", "upload_sub": "JPG - JPEG - PNG",
+        "upload_title": "اسحب وافلت او تصفح الملفات", "upload_sub": "JPG - JPEG - PNG",
         "upload_tip": "تاكد من وضوح الصورة وجودتها العالية",
         "file_name": "الاسم", "file_dim": "الابعاد", "file_size": "الحجم",
         "btn_analyze": "ابدا التحليل الجنائي", "btn_reset": "تحليل وثيقة اخرى",
@@ -45,30 +46,29 @@ L = {
         "img_copymove": "Copy-Move", "img_mask": "المناطق المشبوهة",
         "chat_title": "المحقق الذكي", "chat_sub": "اسالني اي شيء - مدعوم بالذكاء الاصطناعي",
         "chat_placeholder": "اكتب سؤالك هنا...", "chat_send": "ارسال", "chat_clear": "مسح المحادثة",
-        "quick_q": "اسئلة سريعة:", "about_title": "عن نظام CertiScan", "lang_toggle": "English",
-        "step1": "ارفع الوثيقة", "step2": "التحليل الجنائي", "step3": "النتيجة الفورية",
+        "quick_q": "اسئلة سريعة:", "about_title": "منهجية التحليل", "lang_toggle": "English",
         "uploaded_img": "الوثيقة المرفوعة", "file_info": "معلومات الملف",
-        "hero_stat1": "وثيقة محللة", "hero_stat2": "دقة الكشف", "hero_stat3": "تقنية جنائية",
-        "how_works": "كيف يعمل النظام", "tech_used": "التقنيات المستخدمة",
+        "doc_count": "الوثائق المحللة", "precision": "دقة الكشف", "techniques": "تقنية نشطة",
+        "quick_upload": "رفع سريع", "active_status": "حالة التحليل",
+        "ai_chat": "محادثة المحقق الذكي", "ready": "جاهز للاستعلام",
         "verdict_clean": "سليمة", "verdict_sus": "مشبوهة", "verdict_forged": "مزورة",
         "desc_clean": "لم يتم اكتشاف اي علامات تزوير في هذه الوثيقة",
         "desc_sus": "تم اكتشاف بعض الانماط غير المعتادة - يُنصح بمراجعة يدوية",
         "desc_forged": "تم اكتشاف علامات واضحة على التلاعب والتعديل في الوثيقة",
-        "scan_mode": "وضع الفحص الجنائي",
-        "ai_powered": "مدعوم بالذكاء الاصطناعي",
+        "about_system": "عن النظام",
     },
     "en": {
         "tagline": "Truth Cannot Be Forged",
         "subtitle": "Advanced digital forensic system for detecting document and certificate forgery",
-        "nav_home": "Home", "nav_analyze": "Analysis", "nav_about": "About", "nav_chat": "Assistant",
+        "nav_home": "Dashboard", "nav_analyze": "File Upload", "nav_about": "Analysis Methodology", "nav_chat": "Assistant",
         "start_btn": "Start Analysis Now",
-        "upload_title": "Upload Your Document", "upload_sub": "JPG - JPEG - PNG",
+        "upload_title": "Drag & Drop or Browse Files", "upload_sub": "JPG - JPEG - PNG",
         "upload_tip": "Ensure the image is clear and high quality",
         "file_name": "Name", "file_dim": "Dimensions", "file_size": "Size",
         "btn_analyze": "Start Forensic Analysis", "btn_reset": "Analyze Another",
-        "p1": "Initializing system...", "p2": "ELA Analysis...", "p3": "Digital fingerprint...",
-        "p4": "Frequency analysis...", "p5": "DCT Analysis...", "p6": "JPEG Ghost Detection...",
-        "p7": "Copy-Move Detection...", "p8": "AI Analysis...", "p9": "Analysis Complete!",
+        "p1": "Initializing...", "p2": "ELA Analysis...", "p3": "Digital Fingerprint...",
+        "p4": "Frequency Analysis...", "p5": "DCT Analysis...", "p6": "JPEG Ghost...",
+        "p7": "Copy-Move...", "p8": "AI Analysis...", "p9": "Analysis Complete!",
         "tamper_label": "Tampering Probability", "detail_title": "Detailed Analysis",
         "map_title": "Suspicious Regions Map",
         "map_legend": "Red = High Risk  |  Yellow = Medium  |  Blue = Normal",
@@ -76,17 +76,16 @@ L = {
         "img_copymove": "Copy-Move", "img_mask": "Suspicious Regions",
         "chat_title": "AI Investigator", "chat_sub": "Ask me anything - Powered by AI",
         "chat_placeholder": "Type your question here...", "chat_send": "Send", "chat_clear": "Clear Chat",
-        "quick_q": "Quick Questions:", "about_title": "About CertiScan", "lang_toggle": "عربي",
-        "step1": "Upload Document", "step2": "Forensic Analysis", "step3": "Instant Result",
+        "quick_q": "Quick Questions:", "about_title": "Analysis Methodology", "lang_toggle": "عربي",
         "uploaded_img": "Uploaded Document", "file_info": "File Information",
-        "hero_stat1": "Documents Analyzed", "hero_stat2": "Detection Accuracy", "hero_stat3": "Forensic Techniques",
-        "how_works": "How It Works", "tech_used": "Technologies",
+        "doc_count": "Analysed Docs", "precision": "Precision Rate", "techniques": "Active Techniques",
+        "quick_upload": "Quick Upload", "active_status": "Active Analysis Status",
+        "ai_chat": "AI Investigator Chat", "ready": "Ready For Queries",
         "verdict_clean": "Authentic", "verdict_sus": "Suspicious", "verdict_forged": "Forged",
         "desc_clean": "No signs of forgery detected in this document",
         "desc_sus": "Unusual patterns detected - manual review recommended",
         "desc_forged": "Clear signs of tampering and manipulation detected",
-        "scan_mode": "Forensic Scan Mode",
-        "ai_powered": "AI Powered",
+        "about_system": "About System",
     }
 }
 
@@ -96,500 +95,570 @@ dr    = "rtl" if is_ar else "ltr"
 align = "right" if is_ar else "left"
 
 quick_questions = {
-    "ar": ["ما هو نظام CertiScan؟", "ما هي تقنية ELA؟", "كيف اقرا النتيجة؟", "ما هو JPEG Ghost؟", "ما هو Copy-Move؟", "كيف اكتشف التزوير؟"],
-    "en": ["What is CertiScan?", "What is ELA technique?", "How do I read results?", "What is JPEG Ghost?", "What is Copy-Move?", "How to detect forgery?"]
+    "ar": ["ما هو نظام CertiScan؟", "ما هي تقنية ELA؟", "كيف اقرا النتيجة؟", "ما هو JPEG Ghost؟"],
+    "en": ["What is CertiScan?", "What is ELA technique?", "How do I read results?", "What is JPEG Ghost?"]
 }
 
 def sc(s):
-    if s < 12: return "#00ff88"
-    elif s < 30: return "#ffaa00"
-    return "#ff3366"
+    if s < 12: return "#00f5c4"
+    elif s < 30: return "#f5a623"
+    return "#f5365c"
+
+# BG image encoded as CSS
+BG_CSS = """
+background:
+    radial-gradient(ellipse 120% 80% at 50% 50%,
+        rgba(0,20,30,0.97) 0%,
+        rgba(0,10,20,0.99) 100%),
+    url("data:image/svg+xml,%3Csvg width='800' height='600' viewBox='0 0 800 600' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cfilter id='blur'%3E%3CfeGaussianBlur stdDeviation='2'/%3E%3C/filter%3E%3C/defs%3E%3Ccircle cx='200' cy='150' r='80' fill='none' stroke='%2300f5ff' stroke-width='0.5' opacity='0.3'/%3E%3Ccircle cx='200' cy='150' r='60' fill='none' stroke='%2300f5ff' stroke-width='0.3' opacity='0.2'/%3E%3Ccircle cx='200' cy='150' r='40' fill='none' stroke='%2300f5ff' stroke-width='0.2' opacity='0.15'/%3E%3Ccircle cx='600' cy='400' r='100' fill='none' stroke='%2300f5ff' stroke-width='0.5' opacity='0.2'/%3E%3Cpath d='M100 200 Q200 100 300 200 Q400 300 500 200' stroke='%2300f5ff' stroke-width='0.5' fill='none' opacity='0.15'/%3E%3Cpath d='M400 100 Q500 200 600 150 Q700 100 750 200' stroke='%2300f5ff' stroke-width='0.5' fill='none' opacity='0.1'/%3E%3C/svg%3E");
+background-size: cover, cover;
+"""
 
 st.markdown(f"""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Exo+2:wght@300;400;600;700;800;900&family=Rajdhani:wght@400;500;600;700&display=swap');
 
 :root {{
-    --cyan: #00f5ff;
-    --green: #00ff88;
-    --red: #ff3366;
-    --yellow: #ffaa00;
-    --purple: #b347ff;
-    --bg: #010a0f;
-    --bg2: #020f17;
-    --card: rgba(0,245,255,0.03);
-    --border: rgba(0,245,255,0.12);
+    --cyan: #00f5c4;
+    --cyan2: #00d4ff;
+    --red: #f5365c;
+    --yellow: #f5a623;
+    --purple: #6c63ff;
+    --bg: #010d14;
+    --bg2: #020f1a;
+    --card: rgba(0,245,196,0.03);
+    --border: rgba(0,245,196,0.12);
+    --border2: rgba(0,212,255,0.15);
+    --text: #a8d8e8;
+    --text2: #4a8fa8;
 }}
 
-* {{ font-family: 'Exo 2', sans-serif !important; box-sizing: border-box; margin:0; padding:0; }}
-.stApp {{ background: var(--bg) !important; color: #c8f0ff; overflow-x: hidden; }}
+* {{ font-family: 'Exo 2', sans-serif !important; box-sizing: border-box; font-weight: 600; }}
 
-/* ── ANIMATED BACKGROUND ── */
+.stApp {{
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    background: #010d14 !important;
+    color: var(--text);
+}}
+
+/* Fix Streamlit inner containers */
+.stApp > div, 
+[data-testid="stAppViewContainer"],
+[data-testid="stAppViewBlockContainer"],
+section[data-testid="stSidebar"],
+.main, .block-container {{
+    background: transparent !important;
+}}
+
+/* THE REAL BACKGROUND - fixed behind everything */
+[data-testid="stAppViewContainer"] {{
+    background:
+        radial-gradient(ellipse 50% 40% at 15% 25%, rgba(0,120,100,0.18) 0%, transparent 50%),
+        radial-gradient(ellipse 40% 50% at 85% 70%, rgba(20,0,80,0.15) 0%, transparent 50%),
+        radial-gradient(ellipse 60% 30% at 50% 5%, rgba(0,80,90,0.12) 0%, transparent 40%),
+        repeating-radial-gradient(circle at 20% 35%, transparent 0px, transparent 30px, rgba(0,245,196,0.018) 31px, transparent 32px),
+        repeating-radial-gradient(circle at 20% 35%, transparent 0px, transparent 50px, rgba(0,245,196,0.012) 51px, transparent 52px),
+        repeating-radial-gradient(circle at 75% 60%, transparent 0px, transparent 35px, rgba(0,212,255,0.015) 36px, transparent 37px),
+        repeating-radial-gradient(circle at 75% 60%, transparent 0px, transparent 60px, rgba(0,212,255,0.01) 61px, transparent 62px),
+        linear-gradient(160deg, #010d14 0%, #001520 30%, #000e1a 60%, #010d14 100%) !important;
+    background-attachment: fixed !important;
+}}
+
+/* Animated overlay */
 .stApp::before {{
     content: '';
-    position: fixed;
-    inset: 0;
+    position: fixed; inset: 0;
     background:
-        radial-gradient(ellipse 60% 40% at 15% 20%, rgba(0,245,255,0.06) 0%, transparent 55%),
-        radial-gradient(ellipse 50% 60% at 85% 75%, rgba(179,71,255,0.05) 0%, transparent 55%),
-        radial-gradient(ellipse 40% 30% at 50% 50%, rgba(0,255,136,0.03) 0%, transparent 50%);
-    pointer-events: none;
-    z-index: 0;
-    animation: bgPulse 8s ease-in-out infinite alternate;
+        radial-gradient(ellipse 70% 50% at 10% 10%, rgba(0,245,196,0.04) 0%, transparent 50%),
+        radial-gradient(ellipse 60% 40% at 90% 90%, rgba(108,99,255,0.04) 0%, transparent 50%),
+        radial-gradient(ellipse 50% 70% at 50% 50%, rgba(0,212,255,0.02) 0%, transparent 60%);
+    pointer-events: none; z-index: 0;
+    animation: ambientPulse 10s ease-in-out infinite alternate;
 }}
-@keyframes bgPulse {{
-    from {{ opacity: 0.7; }}
-    to   {{ opacity: 1; }}
-}}
-
-/* ── MATRIX / FINGERPRINT CANVAS ── */
-#matrix-canvas {{
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    pointer-events: none;
-    z-index: 0;
-    opacity: 0.07;
+@keyframes ambientPulse {{
+    0%   {{ opacity: 0.6; }}
+    100% {{ opacity: 1; }}
 }}
 
-/* ── SCAN LINES ── */
+/* Scanlines */
 .stApp::after {{
     content: '';
-    position: fixed;
-    inset: 0;
+    position: fixed; inset: 0;
     background: repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 2px,
-        rgba(0,245,255,0.015) 2px,
-        rgba(0,245,255,0.015) 4px
+        0deg, transparent, transparent 3px,
+        rgba(0,245,196,0.008) 3px, rgba(0,245,196,0.008) 4px
     );
-    pointer-events: none;
-    z-index: 1;
-    animation: scanMove 20s linear infinite;
-}}
-@keyframes scanMove {{
-    from {{ background-position: 0 0; }}
-    to   {{ background-position: 0 100vh; }}
+    pointer-events: none; z-index: 1;
 }}
 
 /* ── NAVBAR ── */
 .cs-nav {{
-    position: sticky; top: 0; z-index: 999;
-    background: rgba(1,10,15,0.92);
+    background: rgba(1,13,20,0.95);
     backdrop-filter: blur(20px);
-    border-bottom: 1px solid var(--border);
-    padding: 0 32px;
-    display: flex; align-items: center; justify-content: space-between;
-    height: 64px;
+    border-bottom: 2px solid rgba(0,245,196,0.15);
+    padding: 0 28px;
+    display: flex; align-items: center;
+    justify-content: space-between;
+    height: 60px;
     direction: {dr};
+    position: relative;
+    box-shadow: 0 4px 30px rgba(0,0,0,0.5);
+}}
+.cs-nav::after {{
+    content: '';
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--cyan), var(--cyan2), transparent);
+    animation: navGlow 4s ease-in-out infinite;
+}}
+@keyframes navGlow {{
+    0%,100% {{ opacity: 0.4; }}
+    50%      {{ opacity: 1; }}
+}}
+.cs-logo-wrap {{ display: flex; align-items: center; gap: 10px; }}
+.cs-logo-icon {{
+    width: 32px; height: 32px;
+    border: 2px solid var(--cyan);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    box-shadow: 0 0 15px rgba(0,245,196,0.4);
+    animation: iconPulse 2s ease-in-out infinite;
+}}
+@keyframes iconPulse {{
+    0%,100% {{ box-shadow: 0 0 15px rgba(0,245,196,0.4); }}
+    50%      {{ box-shadow: 0 0 30px rgba(0,245,196,0.8), 0 0 60px rgba(0,245,196,0.3); }}
 }}
 .cs-logo {{
     font-family: 'Share Tech Mono', monospace !important;
-    font-size: 22px;
+    font-size: 20px; font-weight: 900;
     color: var(--cyan);
     letter-spacing: 3px;
-    text-shadow: 0 0 20px rgba(0,245,255,0.6);
-    animation: logoPulse 3s ease-in-out infinite;
+    text-shadow: 0 0 20px rgba(0,245,196,0.6);
 }}
-@keyframes logoPulse {{
-    0%,100% {{ text-shadow: 0 0 20px rgba(0,245,255,0.6); }}
-    50%      {{ text-shadow: 0 0 40px rgba(0,245,255,1), 0 0 80px rgba(0,245,255,0.4); }}
-}}
-.cs-status {{
-    display: flex; align-items: center; gap: 8px;
+.cs-logo span {{ color: var(--cyan2); }}
+.cs-nav-links {{ display: flex; align-items: center; gap: 4px; }}
+.cs-badge {{
+    background: rgba(0,245,196,0.08);
+    border: 1px solid rgba(0,245,196,0.2);
+    border-radius: 6px;
+    padding: 6px 14px;
     font-family: 'Share Tech Mono', monospace !important;
-    font-size: 11px; color: var(--green);
+    font-size: 11px; color: var(--cyan);
     letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-transform: uppercase;
+}}
+.cs-badge:hover {{
+    background: rgba(0,245,196,0.15);
+    border-color: var(--cyan);
+    box-shadow: 0 0 12px rgba(0,245,196,0.3);
+}}
+.cs-badge.active {{
+    background: rgba(0,245,196,0.12);
+    border-color: var(--cyan);
+    color: white;
+}}
+.cs-ready {{
+    display: flex; align-items: center; gap: 8px;
+    background: rgba(0,245,196,0.06);
+    border: 1px solid rgba(0,245,196,0.2);
+    border-radius: 20px; padding: 6px 14px;
+    font-family: 'Share Tech Mono', monospace !important;
+    font-size: 11px; color: var(--cyan);
+    letter-spacing: 1px;
 }}
 .cs-dot {{
     width: 8px; height: 8px; border-radius: 50%;
-    background: var(--green);
+    background: var(--cyan);
+    box-shadow: 0 0 8px var(--cyan);
     animation: dotBlink 1.5s ease-in-out infinite;
-    box-shadow: 0 0 8px var(--green);
 }}
-@keyframes dotBlink {{ 0%,100%{{opacity:1}} 50%{{opacity:0.3}} }}
+@keyframes dotBlink {{ 0%,100%{{opacity:1}} 50%{{opacity:0.2}} }}
 
-/* ── HERO ── */
-.hero-wrap {{
-    text-align: center;
-    padding: 80px 20px 50px;
-    position: relative;
+/* ── DASHBOARD GRID ── */
+.dash-grid {{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 16px;
+    padding: 20px 0;
     direction: {dr};
 }}
-.hero-eyebrow {{
+.dash-card {{
+    background: rgba(0,15,25,0.8);
+    border: 1px solid var(--border2);
+    border-radius: 16px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s;
+    backdrop-filter: blur(10px);
+}}
+.dash-card::before {{
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--cyan), var(--cyan2), transparent);
+    opacity: 0.5;
+}}
+.dash-card:hover {{
+    border-color: rgba(0,245,196,0.3);
+    box-shadow: 0 8px 40px rgba(0,0,0,0.4), 0 0 20px rgba(0,245,196,0.05);
+    transform: translateY(-2px);
+}}
+.dash-card-title {{
     font-family: 'Share Tech Mono', monospace !important;
-    font-size: 11px; letter-spacing: 6px;
-    color: var(--cyan); margin-bottom: 20px;
-    opacity: 0; animation: fadeUp 0.8s 0.2s forwards;
+    font-size: 11px; color: var(--text2);
+    letter-spacing: 3px; text-transform: uppercase;
+    margin-bottom: 16px;
+    display: flex; align-items: center; justify-content: space-between;
 }}
-.hero-title {{
-    font-family: 'Share Tech Mono', monospace !important;
-    font-size: clamp(56px, 10vw, 120px);
-    font-weight: 900; line-height: 0.9;
-    background: linear-gradient(135deg, #ffffff 0%, var(--cyan) 40%, var(--purple) 100%);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    filter: drop-shadow(0 0 30px rgba(0,245,255,0.3));
-    opacity: 0; animation: titleReveal 1s 0.4s forwards;
-    letter-spacing: 4px;
-}}
-@keyframes titleReveal {{
-    from {{ opacity:0; transform: translateY(-30px) scale(0.95); }}
-    to   {{ opacity:1; transform: translateY(0) scale(1); }}
-}}
-.hero-tagline {{
-    font-size: clamp(16px, 2.5vw, 24px);
-    color: var(--cyan); font-weight: 300;
-    letter-spacing: 2px; margin: 16px 0 12px;
-    opacity: 0; animation: fadeUp 0.8s 0.6s forwards;
-    font-family: 'Rajdhani', sans-serif !important;
-}}
-.hero-sub {{
-    font-size: 15px; color: #4a8fa8;
-    max-width: 560px; margin: 0 auto 40px;
-    line-height: 1.8;
-    opacity: 0; animation: fadeUp 0.8s 0.8s forwards;
-}}
-@keyframes fadeUp {{
-    from {{ opacity:0; transform: translateY(20px); }}
-    to   {{ opacity:1; transform: translateY(0); }}
-}}
+.dash-dots {{ display: flex; gap: 4px; }}
+.dash-dot {{ width: 5px; height: 5px; border-radius: 50%; background: var(--border2); }}
 
-/* ── STATS ── */
-.stats-row {{
-    display: flex; justify-content: center; gap: 60px;
-    margin: 30px 0 40px;
-    opacity: 0; animation: fadeUp 0.8s 1s forwards;
-    flex-wrap: wrap;
-}}
-.stat-item {{ text-align: center; }}
-.stat-num {{
-    font-family: 'Share Tech Mono', monospace !important;
-    font-size: 42px; font-weight: 900;
-    background: linear-gradient(135deg, var(--cyan), var(--purple));
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    filter: drop-shadow(0 0 10px rgba(0,245,255,0.4));
-}}
-.stat-label {{ font-size: 11px; color: #2a6a80; letter-spacing: 2px; margin-top: 4px; text-transform: uppercase; }}
-
-/* ── STEP CARDS ── */
-.step-grid {{ display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; direction: {dr}; }}
-.step-card {{
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 16px; padding: 28px 20px;
-    text-align: center; position: relative; overflow: hidden;
-    transition: all 0.4s;
-    cursor: default;
-}}
-.step-card::before {{
-    content: ''; position: absolute;
-    top: -2px; left: -2px; right: -2px; bottom: -2px;
-    background: linear-gradient(135deg, var(--cyan), var(--purple), var(--cyan));
-    border-radius: 18px; z-index: -1;
-    opacity: 0; transition: opacity 0.4s;
-    background-size: 200% 200%;
-    animation: borderAnim 3s linear infinite;
-}}
-@keyframes borderAnim {{
-    0%   {{ background-position: 0% 50%; }}
-    50%  {{ background-position: 100% 50%; }}
-    100% {{ background-position: 0% 50%; }}
-}}
-.step-card:hover::before {{ opacity: 1; }}
-.step-card:hover {{ transform: translateY(-6px); background: rgba(0,245,255,0.06); }}
-.step-num {{
-    width: 44px; height: 44px;
-    border: 2px solid var(--cyan);
-    border-radius: 12px;
-    display: flex; align-items: center; justify-content: center;
-    font-family: 'Share Tech Mono', monospace !important;
-    font-size: 20px; color: var(--cyan);
-    margin: 0 auto 14px;
-    box-shadow: 0 0 15px rgba(0,245,255,0.3);
-}}
-.step-icon {{ font-size: 36px; margin-bottom: 12px; }}
-.step-label {{ font-size: 14px; font-weight: 600; color: #8ab8c8; letter-spacing: 1px; }}
-
-/* ── TECH CARDS ── */
-.tech-card {{
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 16px; padding: 24px 16px;
-    text-align: center; transition: all 0.3s;
+/* Stat cards */
+.stat-card {{
+    background: rgba(0,15,25,0.8);
+    border: 1px solid var(--border2);
+    border-radius: 16px; padding: 24px 20px;
+    backdrop-filter: blur(10px);
     position: relative; overflow: hidden;
+    transition: all 0.3s;
 }}
-.tech-card::after {{
-    content: ''; position: absolute;
-    bottom: 0; left: 0; right: 0; height: 2px;
-    background: linear-gradient(90deg, var(--cyan), var(--purple));
-    transform: scaleX(0); transition: transform 0.3s;
+.stat-card::before {{
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+    opacity: 0.4;
 }}
-.tech-card:hover::after {{ transform: scaleX(1); }}
-.tech-card:hover {{ border-color: rgba(0,245,255,0.3); transform: translateY(-4px); }}
+.stat-card:hover {{ border-color: rgba(0,245,196,0.3); transform: translateY(-2px); }}
+.stat-label {{
+    font-family: 'Share Tech Mono', monospace !important;
+    font-size: 10px; color: var(--text2);
+    letter-spacing: 3px; text-transform: uppercase;
+    margin-bottom: 8px;
+}}
+.stat-value {{
+    font-family: 'Share Tech Mono', monospace !important;
+    font-size: 48px; font-weight: 900;
+    color: var(--cyan);
+    text-shadow: 0 0 30px rgba(0,245,196,0.5);
+    line-height: 1;
+}}
+.stat-sub {{ font-size: 12px; color: var(--text2); margin-top: 6px; font-family: 'Rajdhani', sans-serif !important; }}
 
-/* ── UPLOAD ZONE ── */
+/* Upload zone */
 .upload-zone {{
-    border: 2px dashed rgba(0,245,255,0.25);
-    border-radius: 20px; padding: 60px 30px;
+    border: 2px dashed rgba(0,245,196,0.25);
+    border-radius: 14px; padding: 32px 20px;
     text-align: center;
-    background: rgba(0,245,255,0.02);
-    transition: all 0.4s; direction: {dr};
-    position: relative; overflow: hidden;
+    background: rgba(0,245,196,0.02);
+    transition: all 0.3s; direction: {dr};
+    cursor: pointer;
 }}
-.upload-zone::before {{
-    content: ''; position: absolute; inset: 0;
-    background: radial-gradient(ellipse at center, rgba(0,245,255,0.04) 0%, transparent 70%);
-    opacity: 0; transition: opacity 0.4s;
+.upload-zone:hover {{
+    border-color: rgba(0,245,196,0.5);
+    background: rgba(0,245,196,0.04);
+    box-shadow: 0 0 30px rgba(0,245,196,0.05);
 }}
-.upload-zone:hover::before {{ opacity: 1; }}
-.upload-zone:hover {{ border-color: rgba(0,245,255,0.5); }}
+.upload-icon {{
+    font-size: 40px; margin-bottom: 12px;
+    filter: drop-shadow(0 0 15px rgba(0,245,196,0.4));
+    animation: float 3s ease-in-out infinite;
+}}
+@keyframes float {{
+    0%,100% {{ transform: translateY(0); }}
+    50%      {{ transform: translateY(-8px); }}
+}}
 
-/* ── RESULT CARD ── */
+/* Progress bars in status */
+.status-item {{ margin-bottom: 14px; }}
+.status-label {{
+    display: flex; justify-content: space-between;
+    font-family: 'Share Tech Mono', monospace !important;
+    font-size: 11px; color: var(--text2);
+    margin-bottom: 6px; letter-spacing: 1px;
+}}
+.status-bar {{
+    height: 4px; border-radius: 2px;
+    background: rgba(0,245,196,0.1);
+    overflow: hidden;
+}}
+.status-fill {{
+    height: 100%; border-radius: 2px;
+    background: linear-gradient(90deg, var(--cyan), var(--cyan2));
+    box-shadow: 0 0 8px rgba(0,245,196,0.4);
+    transition: width 1s ease;
+}}
+
+/* Gauge */
+.gauge-wrap {{ text-align: center; padding: 10px 0; }}
+.gauge-num {{
+    font-family: 'Share Tech Mono', monospace !important;
+    font-size: 56px; font-weight: 900;
+    color: var(--cyan);
+    text-shadow: 0 0 40px rgba(0,245,196,0.6);
+    animation: numPulse 3s ease-in-out infinite;
+}}
+@keyframes numPulse {{
+    0%,100% {{ text-shadow: 0 0 40px rgba(0,245,196,0.6); }}
+    50%      {{ text-shadow: 0 0 60px rgba(0,245,196,1), 0 0 100px rgba(0,212,255,0.4); }}
+}}
+.gauge-sub {{
+    font-family: 'Rajdhani', sans-serif !important;
+    font-size: 13px; color: var(--text2);
+    letter-spacing: 2px; text-transform: uppercase;
+}}
+
+/* Result card */
 .result-card {{
-    border-radius: 24px; padding: 60px 40px;
-    text-align: center; margin: 28px 0;
+    border-radius: 20px; padding: 52px 36px;
+    text-align: center; margin: 20px 0;
     position: relative; overflow: hidden;
     animation: resultReveal 0.8s cubic-bezier(0.34,1.56,0.64,1);
     direction: {dr};
+    backdrop-filter: blur(10px);
 }}
 @keyframes resultReveal {{
-    from {{ opacity:0; transform: scale(0.8) translateY(30px); }}
+    from {{ opacity:0; transform: scale(0.85) translateY(20px); }}
     to   {{ opacity:1; transform: scale(1) translateY(0); }}
 }}
 .result-clean  {{
-    background: linear-gradient(135deg, rgba(0,255,136,0.1), rgba(0,255,136,0.03));
-    border: 2px solid rgba(0,255,136,0.5);
-    box-shadow: 0 0 80px rgba(0,255,136,0.15), inset 0 0 60px rgba(0,255,136,0.05);
+    background: linear-gradient(135deg, rgba(0,245,196,0.08), rgba(0,245,196,0.02));
+    border: 2px solid rgba(0,245,196,0.5);
+    box-shadow: 0 0 80px rgba(0,245,196,0.1), inset 0 0 40px rgba(0,245,196,0.03);
 }}
 .result-sus    {{
-    background: linear-gradient(135deg, rgba(255,170,0,0.1), rgba(255,170,0,0.03));
-    border: 2px solid rgba(255,170,0,0.5);
-    box-shadow: 0 0 80px rgba(255,170,0,0.15), inset 0 0 60px rgba(255,170,0,0.05);
+    background: linear-gradient(135deg, rgba(245,166,35,0.08), rgba(245,166,35,0.02));
+    border: 2px solid rgba(245,166,35,0.5);
+    box-shadow: 0 0 80px rgba(245,166,35,0.1), inset 0 0 40px rgba(245,166,35,0.03);
 }}
 .result-forged {{
-    background: linear-gradient(135deg, rgba(255,51,102,0.1), rgba(255,51,102,0.03));
-    border: 2px solid rgba(255,51,102,0.5);
-    box-shadow: 0 0 80px rgba(255,51,102,0.2), inset 0 0 60px rgba(255,51,102,0.05);
+    background: linear-gradient(135deg, rgba(245,54,92,0.1), rgba(245,54,92,0.02));
+    border: 2px solid rgba(245,54,92,0.5);
+    box-shadow: 0 0 80px rgba(245,54,92,0.15), inset 0 0 40px rgba(245,54,92,0.03);
 }}
 .big-pct {{
     font-family: 'Share Tech Mono', monospace !important;
-    font-size: 120px; font-weight: 900; line-height: 1;
+    font-size: 110px; font-weight: 900; line-height: 1;
     filter: drop-shadow(0 0 30px currentColor);
-    animation: pctReveal 1s 0.3s backwards;
+    animation: pctIn 0.8s 0.2s backwards;
 }}
-@keyframes pctReveal {{
-    from {{ opacity:0; transform: scale(0.5); }}
-    to   {{ opacity:1; transform: scale(1); }}
-}}
+@keyframes pctIn {{ from{{opacity:0;transform:scale(0.5)}} to{{opacity:1;transform:scale(1)}} }}
 .verdict-text {{
-    font-size: 42px; font-weight: 800;
-    margin-top: 12px; letter-spacing: 3px;
     font-family: 'Rajdhani', sans-serif !important;
-    animation: fadeUp 0.6s 0.5s backwards;
+    font-size: 40px; font-weight: 800;
+    margin-top: 10px; letter-spacing: 4px;
+    text-transform: uppercase;
+    animation: fadeUp 0.6s 0.4s backwards;
 }}
-.verdict-sub {{ font-size: 15px; color: #4a8fa8; margin-top: 10px; animation: fadeUp 0.6s 0.7s backwards; }}
+.verdict-sub {{
+    font-size: 14px; color: var(--text2);
+    margin-top: 8px; letter-spacing: 1px;
+    animation: fadeUp 0.6s 0.6s backwards;
+}}
+@keyframes fadeUp {{
+    from{{opacity:0;transform:translateY(15px)}}
+    to{{opacity:1;transform:translateY(0)}}
+}}
 
-/* ── METRIC CARDS ── */
+/* Metric cards */
 .metric-card {{
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 16px; padding: 24px 14px;
+    background: rgba(0,15,25,0.8);
+    border: 1px solid var(--border2);
+    border-radius: 14px; padding: 20px 14px;
     text-align: center; transition: all 0.3s;
-    position: relative;
+    backdrop-filter: blur(10px);
+    position: relative; overflow: hidden;
 }}
+.metric-card::after {{
+    content: '';
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+    transform: scaleX(0); transition: transform 0.3s;
+}}
+.metric-card:hover::after {{ transform: scaleX(1); }}
 .metric-card:hover {{
-    border-color: rgba(0,245,255,0.3);
-    transform: translateY(-5px);
-    box-shadow: 0 12px 40px rgba(0,245,255,0.1);
+    border-color: rgba(0,245,196,0.3);
+    transform: translateY(-4px);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.4);
 }}
 .metric-num {{
     font-family: 'Share Tech Mono', monospace !important;
-    font-size: 44px; font-weight: 900;
+    font-size: 40px; font-weight: 900;
     filter: drop-shadow(0 0 8px currentColor);
 }}
-.metric-name {{ font-size: 13px; font-weight: 700; color: #4a8fa8; margin-top: 8px; letter-spacing: 2px; text-transform: uppercase; }}
-.metric-desc {{ font-size: 11px; color: #2a5060; margin-top: 4px; }}
-
-/* ── ABOUT CARDS ── */
-.about-card {{
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 16px; padding: 28px;
-    margin-bottom: 16px; direction: {dr};
-    transition: all 0.3s;
-    position: relative; overflow: hidden;
+.metric-name {{
+    font-family: 'Share Tech Mono', monospace !important;
+    font-size: 11px; color: var(--text2);
+    margin-top: 8px; letter-spacing: 2px; text-transform: uppercase;
 }}
-.about-card::before {{
-    content: ''; position: absolute;
-    left: 0; top: 0; bottom: 0; width: 3px;
-    background: linear-gradient(180deg, var(--cyan), var(--purple));
-    opacity: 0; transition: opacity 0.3s;
-}}
-.about-card:hover::before {{ opacity: 1; }}
-.about-card:hover {{ border-color: rgba(0,245,255,0.2); padding-left: 32px; }}
+.metric-desc {{ font-size: 11px; color: rgba(74,143,168,0.6); margin-top: 4px; }}
 
-/* ── CHAT ── */
+/* Chat */
+.chat-wrap {{
+    background: rgba(0,15,25,0.8);
+    border: 1px solid var(--border2);
+    border-radius: 16px; padding: 20px;
+    min-height: 340px; direction: {dr};
+    backdrop-filter: blur(10px);
+    position: relative;
+}}
 .msg-user {{
-    background: linear-gradient(135deg, rgba(0,245,255,0.1), rgba(179,71,255,0.1));
-    border: 1px solid rgba(0,245,255,0.2);
-    border-radius: 16px 16px {'4px 16px' if is_ar else '16px 4px'};
+    background: linear-gradient(135deg, rgba(0,245,196,0.08), rgba(0,212,255,0.08));
+    border: 1px solid rgba(0,245,196,0.2);
+    border-radius: 14px 14px {'4px 14px' if is_ar else '14px 4px'};
     padding: 12px 16px; font-size: 14px;
-    margin: 6px 0; text-align: {align};
+    margin: 8px 0; text-align: {align};
     font-family: 'Rajdhani', sans-serif !important;
+    font-weight: 500; letter-spacing: 0.5px;
 }}
 .msg-bot {{
-    background: rgba(0,245,255,0.03);
-    border: 1px solid rgba(0,245,255,0.1);
-    border-radius: 16px 16px {'16px 4px' if is_ar else '4px 16px'};
+    background: rgba(0,245,196,0.02);
+    border: 1px solid rgba(0,245,196,0.08);
+    border-radius: 14px 14px {'14px 4px' if is_ar else '4px 14px'};
     padding: 14px 18px; font-size: 14px;
-    line-height: 1.8; margin: 6px 0; text-align: {align};
+    line-height: 1.8; margin: 8px 0; text-align: {align};
+    font-family: 'Rajdhani', sans-serif !important;
+    font-weight: 400;
 }}
 .bot-label {{
     font-family: 'Share Tech Mono', monospace !important;
     font-size: 10px; color: var(--cyan);
-    margin-bottom: 6px; letter-spacing: 2px;
+    margin-bottom: 8px; letter-spacing: 3px;
+    display: flex; align-items: center; gap: 6px;
 }}
+.bot-dot {{ width: 6px; height: 6px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 6px var(--cyan); }}
 
-/* ── FILE INFO ── */
-.file-info-card {{
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 16px; padding: 24px;
-    direction: {dr};
+/* About cards */
+.about-card {{
+    background: rgba(0,15,25,0.8);
+    border: 1px solid var(--border2);
+    border-radius: 14px; padding: 24px;
+    margin-bottom: 14px; direction: {dr};
+    transition: all 0.3s; backdrop-filter: blur(10px);
+    position: relative; overflow: hidden;
+}}
+.about-card::before {{
+    content: '';
+    position: absolute; top: 0; left: 0;
+    width: {'3px' if not is_ar else '0'}; height: 100%;
+    background: linear-gradient(180deg, var(--cyan), var(--purple));
+    opacity: 0; transition: opacity 0.3s;
+}}
+.about-card::after {{
+    content: '';
+    position: absolute; top: 0; right: 0;
+    width: {'0' if not is_ar else '3px'}; height: 100%;
+    background: linear-gradient(180deg, var(--cyan), var(--purple));
+    opacity: 0; transition: opacity 0.3s;
+}}
+.about-card:hover::before, .about-card:hover::after {{ opacity: 1; }}
+.about-card:hover {{ border-color: rgba(0,245,196,0.25); }}
+
+/* Section divider */
+.cs-div {{
+    display: flex; align-items: center; gap: 14px;
+    margin: 24px 0 16px; direction: {dr};
+}}
+.cs-div-line {{ flex: 1; height: 1px; background: linear-gradient(90deg, transparent, var(--border2), transparent); }}
+.cs-div-text {{
     font-family: 'Share Tech Mono', monospace !important;
+    font-size: 10px; color: var(--text2);
+    letter-spacing: 4px; text-transform: uppercase; white-space: nowrap;
 }}
-.fi-label {{ font-size: 10px; color: #2a6a80; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px; }}
-.fi-value {{ font-size: 14px; color: var(--cyan); margin-bottom: 16px; }}
 
-/* ── PROGRESS ── */
+/* File info */
+.file-card {{
+    background: rgba(0,15,25,0.8);
+    border: 1px solid var(--border2);
+    border-radius: 14px; padding: 20px;
+    direction: {dr}; backdrop-filter: blur(10px);
+}}
+.fi-label {{
+    font-family: 'Share Tech Mono', monospace !important;
+    font-size: 10px; color: var(--text2);
+    letter-spacing: 3px; text-transform: uppercase; margin-bottom: 4px;
+}}
+.fi-value {{
+    font-family: 'Share Tech Mono', monospace !important;
+    font-size: 14px; color: var(--cyan);
+    margin-bottom: 14px; word-break: break-all;
+}}
+
+/* Progress bar */
 .stProgress > div > div {{
-    background: linear-gradient(90deg, var(--cyan), var(--purple)) !important;
+    background: linear-gradient(90deg, var(--cyan), var(--cyan2)) !important;
     border-radius: 4px !important;
-    box-shadow: 0 0 10px rgba(0,245,255,0.5) !important;
-    animation: progressGlow 1s ease-in-out infinite alternate !important;
-}}
-@keyframes progressGlow {{
-    from {{ box-shadow: 0 0 10px rgba(0,245,255,0.5); }}
-    to   {{ box-shadow: 0 0 20px rgba(0,245,255,0.9), 0 0 40px rgba(179,71,255,0.4); }}
+    box-shadow: 0 0 12px rgba(0,245,196,0.5) !important;
 }}
 
-/* ── BUTTONS ── */
+/* Buttons */
 .stButton > button {{
-    background: transparent !important;
+    background: rgba(0,245,196,0.06) !important;
     color: var(--cyan) !important;
-    font-size: 15px !important;
+    font-family: 'Share Tech Mono', monospace !important;
+    font-size: 12px !important;
     font-weight: 700 !important;
-    padding: 14px 28px !important;
+    padding: 12px 24px !important;
     border-radius: 10px !important;
-    border: 1px solid rgba(0,245,255,0.4) !important;
+    border: 1px solid rgba(0,245,196,0.3) !important;
     width: 100% !important;
     transition: all 0.3s !important;
-    font-family: 'Rajdhani', sans-serif !important;
     letter-spacing: 2px !important;
     text-transform: uppercase !important;
-    position: relative !important;
-    overflow: hidden !important;
-}}
-.stButton > button::before {{
-    content: '' !important;
-    position: absolute !important;
-    inset: 0 !important;
-    background: linear-gradient(135deg, rgba(0,245,255,0.1), rgba(179,71,255,0.1)) !important;
-    opacity: 0 !important;
-    transition: opacity 0.3s !important;
 }}
 .stButton > button:hover {{
+    background: rgba(0,245,196,0.12) !important;
     border-color: var(--cyan) !important;
-    box-shadow: 0 0 20px rgba(0,245,255,0.3), inset 0 0 20px rgba(0,245,255,0.05) !important;
+    box-shadow: 0 0 20px rgba(0,245,196,0.25) !important;
     transform: translateY(-2px) !important;
 }}
 
-/* ── SECTION DIVIDER ── */
-.cs-divider {{
-    display: flex; align-items: center; gap: 16px;
-    margin: 32px 0 20px; direction: {dr};
+hr {{ border-color: rgba(0,245,196,0.08) !important; }}
+[data-testid="stFileUploader"] label {{ display: none !important; }}
+.stTextInput > div > div > input {{
+    background: rgba(0,15,25,0.8) !important;
+    border: 1px solid var(--border2) !important;
+    border-radius: 10px !important;
+    color: var(--text) !important;
+    font-family: 'Rajdhani', sans-serif !important;
+    font-size: 15px !important;
+    padding: 12px 16px !important;
 }}
-.cs-divider-line {{ flex: 1; height: 1px; background: linear-gradient(90deg, transparent, var(--border), transparent); }}
-.cs-divider-text {{
-    font-family: 'Share Tech Mono', monospace !important;
-    font-size: 10px; color: #2a6a80; letter-spacing: 3px; text-transform: uppercase;
-    white-space: nowrap;
+.stTextInput > div > div > input:focus {{
+    border-color: var(--cyan) !important;
+    box-shadow: 0 0 15px rgba(0,245,196,0.2) !important;
 }}
-
-hr {{ border-color: rgba(0,245,255,0.08) !important; }}
-[data-testid="stFileUploader"] {{ background: transparent !important; }}
-
-/* ── CORNER DECORATIONS ── */
-.corner-tl, .corner-tr, .corner-bl, .corner-br {{
-    position: absolute; width: 20px; height: 20px;
-    border-color: var(--cyan); border-style: solid; opacity: 0.5;
-}}
-.corner-tl {{ top: 12px; left: 12px; border-width: 2px 0 0 2px; border-radius: 4px 0 0 0; }}
-.corner-tr {{ top: 12px; right: 12px; border-width: 2px 2px 0 0; border-radius: 0 4px 0 0; }}
-.corner-bl {{ bottom: 12px; left: 12px; border-width: 0 0 2px 2px; border-radius: 0 0 0 4px; }}
-.corner-br {{ bottom: 12px; right: 12px; border-width: 0 2px 2px 0; border-radius: 0 0 4px 0; }}
 </style>
-
-<!-- Matrix Canvas -->
-<canvas id="matrix-canvas"></canvas>
-<script>
-(function() {{
-    const canvas = document.getElementById('matrix-canvas');
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-
-    const chars = '01アイウエオカキクケコ∑∆∏√∞≠≈∫∂∇⊕⊗⊙◈◉◎▲▼◆●■';
-    const fontSize = 13;
-    const cols = Math.floor(canvas.width / fontSize);
-    const drops = Array(cols).fill(1);
-
-    function draw() {{
-        ctx.fillStyle = 'rgba(1,10,15,0.05)';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = 'rgba(0,245,255,0.5)';
-        ctx.font = fontSize + 'px Share Tech Mono, monospace';
-        for (let i = 0; i < drops.length; i++) {{
-            const text = chars[Math.floor(Math.random() * chars.length)];
-            ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-            if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
-            drops[i]++;
-        }}
-    }}
-    setInterval(draw, 50);
-    window.addEventListener('resize', () => {{
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-    }});
-}})();
-</script>
 """, unsafe_allow_html=True)
 
 # ── NAVBAR ──
 st.markdown(f"""
 <div class="cs-nav">
-    <div class="cs-logo">CERTISCAN</div>
-    <div class="cs-status">
+    <div class="cs-logo-wrap">
+        <div class="cs-logo-icon">🛡</div>
+        <div class="cs-logo">CERTI<span>SCAN</span></div>
+    </div>
+    <div class="cs-ready">
         <div class="cs-dot"></div>
-        {'نظام نشط' if is_ar else 'SYSTEM ACTIVE'}
+        {t["ready"]}
     </div>
 </div>
 """, unsafe_allow_html=True)
 
-# ── NAV BUTTONS ──
-n1,n2,n3,n4,n5 = st.columns([1,1,1,1,1])
-for col, pg, label in [
-    (n1,"home",t["nav_home"]),
-    (n2,"analyze",t["nav_analyze"]),
-    (n3,"about",t["nav_about"]),
-    (n4,"chat",t["nav_chat"]),
-    (n5,"lang",""),
-]:
+# Nav tabs
+n1,n2,n3,n4,n5 = st.columns(5)
+pages = [("home",t["nav_home"]),("analyze",t["nav_analyze"]),("about",t["nav_about"]),("chat",t["nav_chat"]),("lang",t["lang_toggle"])]
+for col,(pg,label) in zip([n1,n2,n3,n4,n5], pages):
     with col:
         if pg == "lang":
-            if st.button(t["lang_toggle"], key="lang_btn"):
+            if st.button(label, key="lang_btn"):
                 st.session_state.lang = "en" if st.session_state.lang=="ar" else "ar"
                 st.rerun()
         else:
@@ -597,80 +666,123 @@ for col, pg, label in [
                 st.session_state.page = pg
                 st.rerun()
 
+st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
+
 # ════════════════════════════════════════════
-#  HOME
+#  HOME - DASHBOARD
 # ════════════════════════════════════════════
 if st.session_state.page == "home":
+
     st.markdown(f"""
-    <div class="hero-wrap">
-        <div class="hero-eyebrow">[ FORENSIC DOCUMENT ANALYSIS SYSTEM v3.0 ]</div>
-        <div class="hero-title">CERTISCAN</div>
-        <div class="hero-tagline">{t["tagline"]}</div>
-        <div class="hero-sub">{t["subtitle"]}</div>
-        <div class="stats-row">
-            <div class="stat-item"><div class="stat-num">10K+</div><div class="stat-label">{t["hero_stat1"]}</div></div>
-            <div class="stat-item"><div class="stat-num">97%</div><div class="stat-label">{t["hero_stat2"]}</div></div>
-            <div class="stat-item"><div class="stat-num">07</div><div class="stat-label">{t["hero_stat3"]}</div></div>
+    <div style="direction:{dr};margin-bottom:20px">
+        <div style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text2);letter-spacing:4px;margin-bottom:6px">
+            FORENSIC DOCUMENT ANALYSIS SYSTEM v3.0
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+            <div style="font-family:'Rajdhani',sans-serif;font-size:26px;font-weight:800;color:#c8e8f0;letter-spacing:2px">
+                {t["tagline"]}
+            </div>
+            <div style="background:rgba(0,245,196,0.08);border:1px solid rgba(0,245,196,0.3);border-radius:20px;
+                 padding:8px 18px;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--cyan);letter-spacing:2px">
+                ▸ {t["ready"]}
+            </div>
         </div>
     </div>
     """, unsafe_allow_html=True)
 
-    _, cc, _ = st.columns([1,2,1])
-    with cc:
-        if st.button(f"⟩  {t['start_btn']}", key="hero_start"):
-            st.session_state.page = "analyze"
-            st.rerun()
+    # ROW 1: Status + Chat preview
+    row1_col2, row1_col3 = st.columns([1, 1])
 
-    st.markdown(f"""
-    <div class="cs-divider">
-        <div class="cs-divider-line"></div>
-        <div class="cs-divider-text">{t["how_works"]}</div>
-        <div class="cs-divider-line"></div>
-    </div>
-    <div class="step-grid">
-        <div class="step-card">
-            <div class="step-num">01</div>
-            <div class="step-icon">📤</div>
-            <div class="step-label">{t["step1"]}</div>
-        </div>
-        <div class="step-card">
-            <div class="step-num">02</div>
-            <div class="step-icon">🔬</div>
-            <div class="step-label">{t["step2"]}</div>
-        </div>
-        <div class="step-card">
-            <div class="step-num">03</div>
-            <div class="step-icon">📊</div>
-            <div class="step-label">{t["step3"]}</div>
-        </div>
-    </div>
-    <div class="cs-divider" style="margin-top:40px">
-        <div class="cs-divider-line"></div>
-        <div class="cs-divider-text">{t["tech_used"]}</div>
-        <div class="cs-divider-line"></div>
-    </div>
-    """, unsafe_allow_html=True)
+    with row1_col2:
+        st.markdown(f'<div class="dash-card-title"><span>[ {t["active_status"]} ]</span><div class="dash-dots"><div class="dash-dot"></div><div class="dash-dot"></div><div class="dash-dot"></div></div></div>', unsafe_allow_html=True)
+        techniques = [
+            ("Copy-Move Detection", 85),
+            ("FFT Frequency Analysis", 60),
+            ("JPEG Ghost Analysis", 95),
+            ("ELA Analysis", 78),
+            ("DCT Analysis", 70),
+        ]
+        for name, val in techniques:
+            st.markdown(f"""
+            <div class="status-item">
+                <div class="status-label">
+                    <span>{name}</span>
+                    <span style="color:var(--cyan)">{val}%</span>
+                </div>
+                <div class="status-bar">
+                    <div class="status-fill" style="width:{val}%"></div>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
 
-    tc1,tc2,tc3,tc4 = st.columns(4)
-    for col,ic,name,desc,color in [
-        (tc1,"🔬","ELA","Error Level Analysis","#00f5ff"),
-        (tc2,"🌊","FFT+DCT","Frequency Analysis","#b347ff"),
-        (tc3,"👻","JPEG Ghost","Compression Analysis","#00ff88"),
-        (tc4,"🔁","Copy-Move","Duplication Detection","#ffaa00"),
-    ]:
-        with col:
-            st.markdown(f'<div class="tech-card"><div style="font-size:28px;margin-bottom:10px">{ic}</div><div style="font-size:16px;font-weight:800;color:{color};margin-bottom:6px;letter-spacing:1px">{name}</div><div style="font-size:11px;color:#2a6a80;letter-spacing:1px">{desc}</div></div>', unsafe_allow_html=True)
+    with row1_col3:
+        st.markdown(f'<div class="dash-card-title"><span>[ {t["ai_chat"]} ]</span><div class="dash-dots"><div class="dash-dot"></div><div class="dash-dot"></div><div class="dash-dot"></div></div></div>', unsafe_allow_html=True)
+        st.markdown(f"""
+        <div style="background:rgba(0,15,25,0.6);border:1px solid var(--border2);border-radius:12px;padding:14px;margin-bottom:12px;min-height:120px">
+            <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text2);letter-spacing:2px;margin-bottom:10px">▸ CERTISCAN AI</div>
+            <div style="font-size:13px;color:var(--text2);font-family:'Rajdhani',sans-serif;line-height:1.6">
+                {'مرحباً! انا المحقق الذكي لـ CertiScan. يمكنني الاجابة على اسئلتك عن التزوير وتحليل المستندات.' if is_ar else 'Hello! I am CertiScan AI Investigator. I can answer your questions about forgery detection and document analysis.'}
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+        st.markdown(f"""
+        <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text2);letter-spacing:2px;margin-bottom:8px">{'اسئلة سريعة' if is_ar else 'Quick Questions'}</div>
+        """, unsafe_allow_html=True)
+        for q in quick_questions[st.session_state.lang][:2]:
+            if st.button(q, key=f"home_q_{q[:10]}", use_container_width=True):
+                st.session_state.page = "chat"
+                st.session_state.chat_history.append(("user", q))
+                st.session_state.groq_history.append({"role":"user","content":q})
+                try:
+                    ans = chat(q)
+                except:
+                    ans = "حدث خطا" if is_ar else "Error occurred"
+                st.session_state.chat_history.append(("bot", ans))
+                st.session_state.groq_history.append({"role":"assistant","content":ans})
+                st.rerun()
+
+    st.markdown("<div style='height:16px'></div>", unsafe_allow_html=True)
+
+    # ROW 2: Stats
+    s1, s2, s3 = st.columns(3)
+    count = st.session_state.doc_count
+    with s1:
+        st.markdown(f"""
+        <div class="stat-card">
+            <div class="stat-label">{t["doc_count"]}</div>
+            <div class="stat-value">+{count if count > 0 else '0'}</div>
+            <div class="stat-sub">{'Shaze Tech Mono' if not is_ar else 'وثيقة محللة'}</div>
+        </div>
+        """, unsafe_allow_html=True)
+    with s2:
+        st.markdown(f"""
+        <div class="stat-card">
+            <div class="stat-label">{t["precision"]}</div>
+            <div class="gauge-wrap">
+                <div class="gauge-num">85%</div>
+                <div class="gauge-sub">{t["precision"]}</div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+    with s3:
+        st.markdown(f"""
+        <div class="stat-card" style="text-align:center">
+            <div class="stat-label">{t["techniques"]}</div>
+            <div class="stat-value">07</div>
+            <div style="font-size:32px;margin-top:8px;filter:drop-shadow(0 0 10px rgba(0,245,196,0.4))">🔬</div>
+        </div>
+        """, unsafe_allow_html=True)
 
 # ════════════════════════════════════════════
 #  ANALYZE
 # ════════════════════════════════════════════
 elif st.session_state.page == "analyze":
     st.markdown(f"""
-    <div style="direction:{dr};margin:24px 0 20px;position:relative">
-        <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:#2a6a80;letter-spacing:4px;margin-bottom:8px">
-            [ {t["scan_mode"]} ]
+    <div style="direction:{dr};margin-bottom:20px">
+        <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text2);letter-spacing:4px;margin-bottom:6px">
+            [ FORENSIC SCAN MODE ]
         </div>
-        <div style="font-size:28px;font-weight:800;color:#c8f0ff;letter-spacing:1px">
+        <div style="font-size:24px;font-weight:800;color:#c8e8f0;letter-spacing:1px">
             🔬 {'تحليل الوثيقة' if is_ar else 'Document Analysis'}
         </div>
     </div>
@@ -681,10 +793,10 @@ elif st.session_state.page == "analyze":
     if not uploaded_file:
         st.markdown(f"""
         <div class="upload-zone">
-            <div style="font-size:64px;margin-bottom:20px;filter:drop-shadow(0 0 20px rgba(0,245,255,0.4))">📂</div>
-            <div style="font-size:22px;font-weight:700;color:#c8f0ff;margin-bottom:8px">{t["upload_title"]}</div>
-            <div style="font-family:'Share Tech Mono',monospace;font-size:12px;color:#2a6a80;letter-spacing:3px">{t["upload_sub"]}</div>
-            <div style="margin-top:20px;font-size:12px;color:rgba(0,245,255,0.5);letter-spacing:1px">⚠ {t["upload_tip"]}</div>
+            <div class="upload-icon">📂</div>
+            <div style="font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:#c8e8f0;margin-bottom:8px">{t["upload_title"]}</div>
+            <div style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text2);letter-spacing:3px">{t["upload_sub"]}</div>
+            <div style="margin-top:16px;font-size:12px;color:rgba(0,245,196,0.4);letter-spacing:1px">⚠ {t["upload_tip"]}</div>
         </div>
         """, unsafe_allow_html=True)
 
@@ -701,10 +813,10 @@ elif st.session_state.page == "analyze":
             st.image(img_rgb, caption=t["uploaded_img"], use_column_width=True)
         with cf:
             st.markdown(f"""
-            <div class="file-info-card">
-                <div style="font-size:11px;color:rgba(0,245,255,0.5);letter-spacing:3px;margin-bottom:16px">> {t["file_info"]}</div>
+            <div class="file-card">
+                <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:rgba(0,245,196,0.5);letter-spacing:3px;margin-bottom:16px">▸ {t["file_info"]}</div>
                 <div class="fi-label">{t["file_name"]}</div>
-                <div class="fi-value" style="font-size:12px;word-break:break-all">{uploaded_file.name}</div>
+                <div class="fi-value" style="font-size:12px">{uploaded_file.name}</div>
                 <div class="fi-label">{t["file_dim"]}</div>
                 <div class="fi-value">{w} x {h} px</div>
                 <div class="fi-label">{t["file_size"]}</div>
@@ -712,7 +824,7 @@ elif st.session_state.page == "analyze":
             </div>
             """, unsafe_allow_html=True)
 
-        st.markdown("<br>", unsafe_allow_html=True)
+        st.markdown("<div style='height:12px'></div>", unsafe_allow_html=True)
 
         if st.button(f"⟩⟩  {t['btn_analyze']}", use_container_width=True):
             prog   = st.progress(0)
@@ -729,15 +841,10 @@ elif st.session_state.page == "analyze":
 
             steps = [(t["p1"],8),(t["p2"],20),(t["p3"],34),(t["p4"],48),(t["p5"],60),(t["p6"],72),(t["p7"],84),(t["p8"],94)]
             for msg, pct in steps:
-                status.markdown(f"""
-                <div style="text-align:center;padding:12px">
-                    <span style="font-family:'Share Tech Mono',monospace;font-size:12px;color:#00f5ff;letter-spacing:2px">
-                        ▸ {msg}
-                    </span>
-                </div>
-                """, unsafe_allow_html=True)
-                prog.progress(pct)
-                time.sleep(0.2)
+                status.markdown(f"""<div style="text-align:center;padding:10px">
+                    <span style="font-family:'Share Tech Mono',monospace;font-size:11px;color:#00f5c4;letter-spacing:2px">▸ {msg}</span>
+                </div>""", unsafe_allow_html=True)
+                prog.progress(pct); time.sleep(0.2)
 
             img_clean = preprocessor.preprocess(str(temp_input))
             img_gray  = cv2.cvtColor(img_clean, cv2.COLOR_RGB2GRAY)
@@ -761,64 +868,54 @@ elif st.session_state.page == "analyze":
             cm_map, cm_score = cm_detector.detect(img_gray)
             ai_score         = ai_detector.score(img_gray)
 
-            combined   = combine_maps(diff_raw, fft_map, noise_map, weights=[0.3, 0.5, 0.2])
+            combined   = combine_maps(diff_raw, fft_map, noise_map, weights=[0.3,0.5,0.2])
             mask_raw   = create_adaptive_mask(combined, method="triangle")
             mask_ref   = morphological_refine(mask_raw, erode_ksize=5, erode_iterations=2)
-            mask_score = min(float(np.sum(mask_ref > 0) / mask_ref.size * 100) * 5, 100)
+            mask_score = min(float(np.sum(mask_ref>0)/mask_ref.size*100)*5, 100)
 
             final_score = round(min(
                 0.25*ela_score + 0.20*fft_score + 0.15*noise_score +
                 0.10*dct_score + 0.15*ghost_score + 0.10*cm_score + 0.05*mask_score
-            , 100), 1)
+            ,100),1)
+
+            # زود العداد
+            st.session_state.doc_count += 1
 
             prog.progress(100)
-            status.markdown(f"""
-            <div style="text-align:center;padding:12px">
-                <span style="font-family:'Share Tech Mono',monospace;font-size:12px;color:#00ff88;letter-spacing:2px">
-                    ✓ {t["p9"]}
-                </span>
-            </div>
-            """, unsafe_allow_html=True)
-            time.sleep(0.5)
-            prog.empty(); status.empty()
+            status.markdown(f"""<div style="text-align:center;padding:10px">
+                <span style="font-family:'Share Tech Mono',monospace;font-size:11px;color:#00f5c4;letter-spacing:2px">✓ {t["p9"]}</span>
+            </div>""", unsafe_allow_html=True)
+            time.sleep(0.4); prog.empty(); status.empty()
 
             if final_score < 12:
-                css, icon, verdict, color = "result-clean",  "✓", t["verdict_clean"],  "#00ff88"
+                css,icon,verdict,color = "result-clean","✓",t["verdict_clean"],"#00f5c4"
                 desc = t["desc_clean"]
             elif final_score < 30:
-                css, icon, verdict, color = "result-sus",    "⚠", t["verdict_sus"],    "#ffaa00"
+                css,icon,verdict,color = "result-sus","⚠",t["verdict_sus"],"#f5a623"
                 desc = t["desc_sus"]
             else:
-                css, icon, verdict, color = "result-forged", "✗", t["verdict_forged"], "#ff3366"
+                css,icon,verdict,color = "result-forged","✗",t["verdict_forged"],"#f5365c"
                 desc = t["desc_forged"]
 
             st.markdown(f"""
             <div class="result-card {css}">
-                <div class="corner-tl"></div><div class="corner-tr"></div>
-                <div class="corner-bl"></div><div class="corner-br"></div>
                 <div class="big-pct" style="color:{color}">{final_score}%</div>
                 <div class="verdict-text" style="color:{color}">{icon} {verdict}</div>
                 <div class="verdict-sub">{desc}</div>
-                <div style="margin-top:16px;font-family:'Share Tech Mono',monospace;font-size:11px;color:#2a6a80;letter-spacing:2px">
+                <div style="margin-top:14px;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text2);letter-spacing:3px">
                     {t["tamper_label"]}
                 </div>
             </div>
             """, unsafe_allow_html=True)
 
-            st.markdown(f"""
-            <div class="cs-divider">
-                <div class="cs-divider-line"></div>
-                <div class="cs-divider-text">{t["detail_title"]}</div>
-                <div class="cs-divider-line"></div>
-            </div>
-            """, unsafe_allow_html=True)
+            st.markdown(f'<div class="cs-div"><div class="cs-div-line"></div><div class="cs-div-text">{t["detail_title"]}</div><div class="cs-div-line"></div></div>', unsafe_allow_html=True)
 
             m1,m2,m3,m4 = st.columns(4)
             for col,ic,nm,desc_t,s in [
-                (m1,"🔬","ELA","Error Level", round(ela_score,1)),
-                (m2,"📡","Noise","Fingerprint",  round(noise_score,1)),
-                (m3,"🌊","FFT","Frequency",     round(fft_score,1)),
-                (m4,"📐","DCT","Block Analysis", round(dct_score,1)),
+                (m1,"🔬","ELA","Error Level",round(ela_score,1)),
+                (m2,"📡","Noise","Fingerprint",round(noise_score,1)),
+                (m3,"🌊","FFT","Frequency",round(fft_score,1)),
+                (m4,"📐","DCT","Block Analysis",round(dct_score,1)),
             ]:
                 with col:
                     st.markdown(f'<div class="metric-card"><div style="font-size:22px">{ic}</div><div class="metric-num" style="color:{sc(s)}">{s}%</div><div class="metric-name">{nm}</div><div class="metric-desc">{desc_t}</div></div>', unsafe_allow_html=True)
@@ -826,22 +923,16 @@ elif st.session_state.page == "analyze":
 
             m5,m6,m7,m8 = st.columns(4)
             for col,ic,nm,desc_t,s in [
-                (m5,"👻","Ghost","JPEG Artifacts", round(ghost_score,1)),
-                (m6,"🔁","Copy","Duplication",     round(cm_score,1)),
-                (m7,"🤖","AI","Pattern Detect",    round(ai_score,1)),
-                (m8,"🎭","Mask","Suspicious Reg",  round(mask_score,1)),
+                (m5,"👻","Ghost","JPEG Artifacts",round(ghost_score,1)),
+                (m6,"🔁","Copy","Duplication",round(cm_score,1)),
+                (m7,"🤖","AI","Pattern",round(ai_score,1)),
+                (m8,"🎭","Mask","Regions",round(mask_score,1)),
             ]:
                 with col:
                     st.markdown(f'<div class="metric-card"><div style="font-size:22px">{ic}</div><div class="metric-num" style="color:{sc(s)}">{s}%</div><div class="metric-name">{nm}</div><div class="metric-desc">{desc_t}</div></div>', unsafe_allow_html=True)
                     st.progress(min(int(s),100))
 
-            st.markdown(f"""
-            <div class="cs-divider">
-                <div class="cs-divider-line"></div>
-                <div class="cs-divider-text">{t["map_title"]}</div>
-                <div class="cs-divider-line"></div>
-            </div>
-            """, unsafe_allow_html=True)
+            st.markdown(f'<div class="cs-div"><div class="cs-div-line"></div><div class="cs-div-text">{t["map_title"]}</div><div class="cs-div-line"></div></div>', unsafe_allow_html=True)
 
             ela_heat   = cv2.cvtColor(cv2.applyColorMap(ela_gray, cv2.COLORMAP_JET), cv2.COLOR_BGR2RGB)
             ghost_heat = cv2.cvtColor(cv2.applyColorMap(ghost_map, cv2.COLORMAP_HOT), cv2.COLOR_BGR2RGB)
@@ -855,9 +946,9 @@ elif st.session_state.page == "analyze":
             with i4: st.image(cm_rgb,     caption=t["img_copymove"], use_column_width=True)
             with i5: st.image(overlay,    caption=t["img_mask"],     use_column_width=True)
 
-            st.markdown(f'<div style="text-align:center;padding:12px;background:rgba(0,245,255,0.02);border-radius:10px;font-family:\'Share Tech Mono\',monospace;font-size:11px;color:#2a6a80;letter-spacing:2px;margin-top:10px">{t["map_legend"]}</div>', unsafe_allow_html=True)
+            st.markdown(f'<div style="text-align:center;padding:10px;background:rgba(0,245,196,0.02);border-radius:10px;font-family:\'Share Tech Mono\',monospace;font-size:10px;color:var(--text2);letter-spacing:3px;margin-top:10px">{t["map_legend"]}</div>', unsafe_allow_html=True)
 
-        st.markdown("<br>", unsafe_allow_html=True)
+        st.markdown("<div style='height:12px'></div>", unsafe_allow_html=True)
         if st.button(f"↺  {t['btn_reset']}", use_container_width=True):
             st.rerun()
 
@@ -866,43 +957,43 @@ elif st.session_state.page == "analyze":
 # ════════════════════════════════════════════
 elif st.session_state.page == "about":
     st.markdown(f"""
-    <div style="text-align:center;padding:50px 0 30px">
-        <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:#2a6a80;letter-spacing:5px;margin-bottom:12px">
+    <div style="text-align:center;padding:40px 0 24px">
+        <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text2);letter-spacing:5px;margin-bottom:10px">
             [ SYSTEM DOCUMENTATION ]
         </div>
-        <div style="font-size:36px;font-weight:900;color:#c8f0ff;letter-spacing:2px">{t["about_title"]}</div>
+        <div style="font-size:30px;font-weight:900;color:#c8e8f0;letter-spacing:2px">{t["about_title"]}</div>
     </div>
     """, unsafe_allow_html=True)
 
     a1,a2 = st.columns(2)
     cards = [
-        ("🔬","#00f5ff","ELA" if not is_ar else "تقنية ELA",
+        ("🔬","#00f5c4","ELA" if not is_ar else "تقنية ELA",
          "Error Level Analysis detects tampered regions by comparing compression artifacts." if not is_ar else "تحلل مستوى الضغط وتكشف المناطق المعدلة بمقارنة بصمات الضغط."),
-        ("📐","#b347ff","DCT Analysis" if not is_ar else "تحليل DCT",
+        ("📐","#6c63ff","DCT" if not is_ar else "تحليل DCT",
          "Discrete Cosine Transform reveals abnormal coefficient patterns from editing." if not is_ar else "يكشف الانماط غير الطبيعية في معاملات التحويل الناتجة عن التعديل."),
-        ("👻","#00ff88","JPEG Ghost" if not is_ar else "JPEG Ghost",
+        ("👻","#00d4ff","JPEG Ghost",
          "Detects regions compressed at different quality levels, revealing tampering." if not is_ar else "يكتشف الاجزاء المضغوطة بجودة مختلفة مما يدل على التعديل."),
-        ("🔁","#ffaa00","Copy-Move" if not is_ar else "كشف Copy-Move",
+        ("🔁","#f5a623","Copy-Move" if not is_ar else "كشف Copy-Move",
          "ORB feature matching detects duplicated regions within the same document." if not is_ar else "يستخدم مطابقة النقاط المميزة لاكتشاف الاجزاء المنسوخة داخل الوثيقة."),
-        ("🌊","#00f5ff","FFT Analysis" if not is_ar else "تحليل FFT",
+        ("🌊","#00f5c4","FFT" if not is_ar else "تحليل FFT",
          "Spatial frequency analysis reveals editing artifacts invisible to the naked eye." if not is_ar else "تحليل الترددات المكانية يكشف اثار التعديل غير المرئية للعين."),
-        ("🤖","#ff3366","AI Detector" if not is_ar else "كاشف الذكاء الاصطناعي",
+        ("🤖","#f5365c","AI Detector" if not is_ar else "كاشف الذكاء الاصطناعي",
          "Grid artifact and noise pattern analysis for AI-generated content detection." if not is_ar else "يكشف المحتوى المولد بالذكاء الاصطناعي عبر تحليل انماط الشبكة والضوضاء."),
     ]
-    for j, (ic,color,name,desc) in enumerate(cards):
+    for j,(ic,color,name,desc) in enumerate(cards):
         with [a1,a2][j%2]:
-            st.markdown(f'<div class="about-card"><div style="font-size:26px;margin-bottom:10px">{ic}</div><div style="font-size:16px;font-weight:800;color:{color};margin-bottom:8px;letter-spacing:1px">{name}</div><div style="font-size:13px;color:#2a6a80;line-height:1.8">{desc}</div></div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="about-card"><div style="font-size:26px;margin-bottom:10px">{ic}</div><div style="font-size:16px;font-weight:800;color:{color};margin-bottom:8px;letter-spacing:1px;font-family:\'Share Tech Mono\',monospace">{name}</div><div style="font-size:13px;color:var(--text2);line-height:1.8;font-family:\'Rajdhani\',sans-serif">{desc}</div></div>', unsafe_allow_html=True)
 
     st.markdown(f"""
-    <div class="about-card" style="margin-top:8px">
-        <div style="font-family:'Share Tech Mono',monospace;font-size:11px;color:#2a6a80;letter-spacing:3px;margin-bottom:20px">
+    <div class="about-card" style="margin-top:4px">
+        <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text2);letter-spacing:4px;margin-bottom:20px">
             [ {"اوزان الحكم النهائي" if is_ar else "FINAL VERDICT WEIGHTS"} ]
         </div>
         <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;text-align:center">
-            <div><div style="font-family:'Share Tech Mono',monospace;font-size:30px;font-weight:900;color:#00f5ff;filter:drop-shadow(0 0 8px #00f5ff)">25%</div><div style="font-size:11px;color:#2a6a80;letter-spacing:2px;margin-top:4px">ELA</div></div>
-            <div><div style="font-family:'Share Tech Mono',monospace;font-size:30px;font-weight:900;color:#00ff88;filter:drop-shadow(0 0 8px #00ff88)">15%</div><div style="font-size:11px;color:#2a6a80;letter-spacing:2px;margin-top:4px">GHOST</div></div>
-            <div><div style="font-family:'Share Tech Mono',monospace;font-size:30px;font-weight:900;color:#b347ff;filter:drop-shadow(0 0 8px #b347ff)">20%</div><div style="font-size:11px;color:#2a6a80;letter-spacing:2px;margin-top:4px">FFT</div></div>
-            <div><div style="font-family:'Share Tech Mono',monospace;font-size:30px;font-weight:900;color:#ffaa00;filter:drop-shadow(0 0 8px #ffaa00)">10%</div><div style="font-size:11px;color:#2a6a80;letter-spacing:2px;margin-top:4px">COPY-MOVE</div></div>
+            <div><div style="font-family:'Share Tech Mono',monospace;font-size:32px;font-weight:900;color:#00f5c4;text-shadow:0 0 20px #00f5c4">25%</div><div style="font-size:10px;color:var(--text2);letter-spacing:2px;margin-top:4px">ELA</div></div>
+            <div><div style="font-family:'Share Tech Mono',monospace;font-size:32px;font-weight:900;color:#00d4ff;text-shadow:0 0 20px #00d4ff">15%</div><div style="font-size:10px;color:var(--text2);letter-spacing:2px;margin-top:4px">GHOST</div></div>
+            <div><div style="font-family:'Share Tech Mono',monospace;font-size:32px;font-weight:900;color:#6c63ff;text-shadow:0 0 20px #6c63ff">20%</div><div style="font-size:10px;color:var(--text2);letter-spacing:2px;margin-top:4px">FFT</div></div>
+            <div><div style="font-family:'Share Tech Mono',monospace;font-size:32px;font-weight:900;color:#f5a623;text-shadow:0 0 20px #f5a623">10%</div><div style="font-size:10px;color:var(--text2);letter-spacing:2px;margin-top:4px">COPY-MOVE</div></div>
         </div>
     </div>
     """, unsafe_allow_html=True)
@@ -912,12 +1003,10 @@ elif st.session_state.page == "about":
 # ════════════════════════════════════════════
 elif st.session_state.page == "chat":
     st.markdown(f"""
-    <div style="text-align:center;padding:40px 0 20px">
-        <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:#2a6a80;letter-spacing:5px;margin-bottom:12px">
-            [ AI INVESTIGATOR ]
-        </div>
-        <div style="font-size:32px;font-weight:900;color:#c8f0ff;letter-spacing:1px">💬 {t["chat_title"]}</div>
-        <div style="font-size:13px;color:#2a6a80;margin-top:8px;font-family:'Share Tech Mono',monospace;letter-spacing:1px">{t["chat_sub"]}</div>
+    <div style="text-align:center;padding:30px 0 16px">
+        <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text2);letter-spacing:5px;margin-bottom:10px">[ AI INVESTIGATOR ]</div>
+        <div style="font-size:28px;font-weight:900;color:#c8e8f0;letter-spacing:1px">💬 {t["chat_title"]}</div>
+        <div style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text2);margin-top:6px;letter-spacing:1px">{t["chat_sub"]}</div>
     </div>
     """, unsafe_allow_html=True)
 
@@ -925,10 +1014,8 @@ elif st.session_state.page == "chat":
 
     with quick_col:
         st.markdown(f"""
-        <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:12px">
-            <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:#2a6a80;letter-spacing:3px;margin-bottom:14px">
-                [ {t["quick_q"]} ]
-            </div>
+        <div style="background:rgba(0,15,25,0.8);border:1px solid var(--border2);border-radius:14px;padding:16px;margin-bottom:12px;backdrop-filter:blur(10px)">
+            <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text2);letter-spacing:3px;margin-bottom:12px">[ {t["quick_q"]} ]</div>
         </div>
         """, unsafe_allow_html=True)
         for q in quick_questions[st.session_state.lang]:
@@ -936,10 +1023,8 @@ elif st.session_state.page == "chat":
                 st.session_state.chat_history.append(("user", q))
                 st.session_state.groq_history.append({"role":"user","content":q})
                 with st.spinner(""):
-                    try:
-                        ans = chat(q, st.session_state.groq_history[:-1])
-                    except:
-                        ans = "عذراً، حدث خطأ. حاول مرة اخرى." if is_ar else "Sorry, an error occurred. Please try again."
+                    try: ans = chat(q, st.session_state.groq_history[:-1])
+                    except: ans = "عذراً حدث خطا" if is_ar else "Sorry, error occurred"
                 st.session_state.chat_history.append(("bot", ans))
                 st.session_state.groq_history.append({"role":"assistant","content":ans})
                 st.rerun()
@@ -951,33 +1036,26 @@ elif st.session_state.page == "chat":
 
     with chat_col:
         msgs_html = ""
-        for role, msg in st.session_state.chat_history:
-            msg_d = msg.replace("\n", "<br>")
+        for role,msg in st.session_state.chat_history:
+            msg_d = msg.replace("\n","<br>")
             if role == "user":
                 msgs_html += f'<div class="msg-user">{msg_d}</div>'
             else:
-                msgs_html += f'<div class="msg-bot"><div class="bot-label">▸ CERTISCAN AI</div>{msg_d}</div>'
+                msgs_html += f'<div class="msg-bot"><div class="bot-label"><div class="bot-dot"></div> CERTISCAN AI</div>{msg_d}</div>'
 
         if not msgs_html:
             msgs_html = f"""
-            <div style="text-align:center;padding:60px 20px;color:#1a4a5a">
-                <div style="font-size:48px;margin-bottom:16px;filter:drop-shadow(0 0 20px rgba(0,245,255,0.3))">🤖</div>
-                <div style="font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:2px">
-                    {"▸ جاهز للاجابة على اسئلتك" if is_ar else "▸ READY FOR QUERIES"}
+            <div style="text-align:center;padding:60px 20px;color:var(--text2)">
+                <div style="font-size:48px;margin-bottom:14px;filter:drop-shadow(0 0 20px rgba(0,245,196,0.3))">🤖</div>
+                <div style="font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:2px">
+                    {'▸ جاهز للاجابة على اسئلتك' if is_ar else '▸ READY FOR QUERIES'}
                 </div>
             </div>
             """
 
-        st.markdown(f"""
-        <div style="background:var(--card);border:1px solid var(--border);border-radius:20px;
-             padding:24px;min-height:380px;direction:{dr};position:relative">
-            <div class="corner-tl"></div><div class="corner-tr"></div>
-            <div class="corner-bl"></div><div class="corner-br"></div>
-            {msgs_html}
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown(f'<div class="chat-wrap">{msgs_html}</div>', unsafe_allow_html=True)
 
-        st.markdown("<br>", unsafe_allow_html=True)
+        st.markdown("<div style='height:12px'></div>", unsafe_allow_html=True)
         user_input = st.text_input("", placeholder=t["chat_placeholder"], key="free_chat", label_visibility="collapsed")
         sc1, _ = st.columns([1,3])
         with sc1:
@@ -986,10 +1064,8 @@ elif st.session_state.page == "chat":
                     st.session_state.chat_history.append(("user", user_input))
                     st.session_state.groq_history.append({"role":"user","content":user_input})
                     with st.spinner(""):
-                        try:
-                            ans = chat(user_input, st.session_state.groq_history[:-1])
-                        except:
-                            ans = "عذراً، حدث خطأ. حاول مرة اخرى." if is_ar else "Sorry, an error occurred. Please try again."
+                        try: ans = chat(user_input, st.session_state.groq_history[:-1])
+                        except: ans = "عذراً حدث خطا" if is_ar else "Sorry, error occurred"
                     st.session_state.chat_history.append(("bot", ans))
                     st.session_state.groq_history.append({"role":"assistant","content":ans})
                     st.rerun()
